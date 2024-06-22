@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDE</title>
+</head>
+<style>
+
+    body{
+        background-color: rgb(0, 103, 119);
+    }
+    .headerDiv{
+        height: 30px;
+    }
+    .centralCollection{
+        width: 100%;
+        display: flex;
+    }
+    #mainLeft{
+        width: 50%;
+        border: 1px solid black;
+        position: relative;
+        padding: 10px;
+        background-color: rgb(0, 103, 119);
+    }
+    #mainRight{
+        background-color: white;
+        padding: 10px;
+        width: 50%;
+        border: 1px solid black;
+        overflow-y: scroll;
+        overflow-x: scroll;
+        padding-left: 10px;
+    }
+    .bottomDivToRunCode{
+        height: 10%;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    #runComand{
+        width: 101%;
+        height: 100%;
+        background-color: rgb(0, 54, 63);
+        border: 1px solid white;
+        border-radius: 5px;
+        color: white;
+    }
+    .IDE{
+        height: 40%;
+        width: 100%;
+        background-color: rgb(0, 54, 63);
+        color:white;
+        border-radius: 5px;
+    }
+
+</style>
+<body>
+
+    <div class="headerDiv" id="headerDiv">
+        <button id="dragButton" draggable="true"><|></button>
+    </div>
+
+    <div class="centralCollection" id="centralCollection">
+        <div id="mainLeft">
+            <div class="bottomDivToRunCode" id="bottomDivToRunCode">
+                <button id="runComand">Run Code Snippet</button>
+            </div>
+            <textarea class="IDE" id="IDEdesign" placeholder="Put your HTML/CSS code here"></textarea>
+            <textarea class="IDE" id="IDEscript" placeholder="Put your JavaScript code here"></textarea>
+        </div>
+        <div id="mainRight"></div>
+    </div>
+
+    <script>
+
+        window.addEventListener('load', function(){
+            document.getElementById('dragButton').style.marginLeft=((window.innerWidth/2)-26)+'px';
+            document.getElementById('mainLeft').style.height=(window.innerHeight-60)+'px';
+            document.getElementById('mainRight').style.height=(window.innerHeight-60)+'px';
+            document.getElementById('centralCollection').style.height=(window.innerHeight-50)+'px';
+        })
+        
+        document.getElementById('dragButton').addEventListener('drag', function(e) {
+        
+            document.getElementById('dragButton').style.marginLeft=(e.layerX-26)+'px';
+        
+            document.getElementById('mainLeft').style.width=e.layerX+'px';
+            document.getElementById('mainRight').style.width=(window.innerWidth-e.layerX)+'px';
+        
+        });
+        document.getElementById('dragButton').addEventListener('dragend', function(e) {
+        
+            document.getElementById('dragButton').style.marginLeft=(e.layerX-26)+'px';
+        
+            document.getElementById('mainLeft').style.width=e.layerX+'px';
+            document.getElementById('mainRight').style.width=(window.innerWidth-e.layerX)+'px';
+        
+        });
+        
+        
+        document.getElementById('runComand').addEventListener('click', function(){
+        
+            let htmlCode=document.getElementById('IDEdesign').value.trim();
+            let javaScriptCode=document.getElementById('IDEscript').value.trim();
+            
+            document.getElementById('mainRight').innerHTML= htmlCode;
+            document.querySelector('#dynamicScript')?.remove();
+        
+           if(!htmlCode && javaScriptCode){
+                const userConfirmed = confirm('You only have javaScript code do you want to print them to on the result bar?');
+                    if (userConfirmed) {
+                        document.getElementById('mainRight').innerHTML='';
+                        let replaced=javaScriptCode.replaceAll('console.log', 'printConsole');
+                        return addScriptTag(replaced);
+                    } else {
+                        return  addScriptTag(javaScriptCode);
+                    }
+           }else{
+               return addScriptTag(javaScriptCode);
+           }
+           
+            
+        });
+        
+        
+        function printConsole(element){
+            document.getElementById('mainRight').innerHTML+=`${JSON.stringify(element)} \n`;
+        }
+
+        function addScriptTag(javaScriptCode){
+            const newScript = document.createElement('script');
+                newScript.type = 'text/javascript';
+                newScript.id = 'dynamicScript';
+                newScript.text = javaScriptCode;
+                document.body.appendChild(newScript);
+        }
+        
+        
+        </script>
+
+</body>
+</html
